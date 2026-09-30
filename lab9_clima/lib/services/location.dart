@@ -4,7 +4,6 @@ class Location {
   double? latitude;
   double? longitude;
 
-  /// Lấy vị trí GPS hiện tại của người dùng
   Future<bool> getCurrentLocation() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -35,7 +34,6 @@ class Location {
       longitude = position.longitude;
       return true;
     } catch (e) {
-      // Khi không lấy được vị trí (thiết bị giả lập, desktop, hoặc người dùng từ chối quyền)
       return false;
     }
   }

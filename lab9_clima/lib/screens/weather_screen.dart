@@ -29,13 +29,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
     super.dispose();
   }
 
-  /// Lấy thời tiết từ vị trí GPS
   Future<void> _fetchCurrentLocationWeather() async {
     setState(() {
       _isLoading = true;
     });
 
-    WeatherData data = await _weatherService.getLocationWeather();
+    WeatherData? data = await _weatherService.getLocationWeather();
 
     if (mounted) {
       setState(() {
@@ -45,23 +44,31 @@ class _WeatherScreenState extends State<WeatherScreen> {
     }
   }
 
-  /// Tìm kiếm thời tiết theo tên thành phố
   Future<void> _searchCityWeather() async {
     String city = _searchController.text.trim();
     if (city.isEmpty) return;
 
-    // Đóng bàn phím ảo
     FocusScope.of(context).unfocus();
 
     setState(() {
       _isLoading = true;
     });
 
-    WeatherData data = await _weatherService.getCityWeather(city);
+    WeatherData? data = await _weatherService.getCityWeather(city);
 
     if (mounted) {
+      if (data == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Không tìm thấy thông tin thời tiết cho "$city"'),
+            backgroundColor: const Color(0xFFEF4444),
+          ),
+        );
+      }
       setState(() {
-        _weatherData = data;
+        if (data != null) {
+          _weatherData = data;
+        }
         _isLoading = false;
       });
     }
@@ -93,7 +100,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Tiêu đề App
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -107,7 +113,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      // Nút lấy lại vị trí GPS
                       IconButton(
                         icon: const Icon(
                           Icons.my_location,
@@ -120,8 +125,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-
-                  // Thanh tìm kiếm thành phố
                   Row(
                     children: [
                       Expanded(
@@ -176,7 +179,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      // Nút Search
                       ElevatedButton(
                         onPressed: _searchCityWeather,
                         style: ElevatedButton.styleFrom(
@@ -209,8 +211,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
-
-                  // Nội dung thời tiết hoặc hiệu ứng tải
                   if (_isLoading)
                     Container(
                       height: 400,
@@ -234,7 +234,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       ),
                     )
                   else if (_weatherData != null)
-                    _buildWeatherContent(_weatherData!),
+                    _buildWeatherContent(_weatherData!)
+                  else
+                    Container(
+                      height: 300,
+                      alignment: Alignment.center,
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.cloud_off,
+                            size: 64,
+                            color: Color(0xFF94A3B8),
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'Không thể kết nối đến máy chủ thời tiết.\nVui lòng kiểm tra lại kết nối mạng.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF64748B),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -244,11 +269,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  /// Widget hiển thị toàn bộ nội dung thông tin thời tiết
   Widget _buildWeatherContent(WeatherData data) {
     return Column(
       children: [
-        // Vị trí (Tên thành phố, Quốc gia)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -269,7 +292,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
           ],
         ),
         const SizedBox(height: 4),
-        // Giờ địa phương
         Text(
           data.localTimeString,
           style: const TextStyle(
@@ -279,8 +301,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
           ),
         ),
         const SizedBox(height: 18),
-
-        // Thẻ nền chứa chi tiết thời tiết chính
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -290,11 +310,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 22.0),
           child: Column(
             children: [
-              // Biểu tượng thời tiết
               data.buildWeatherIcon(size: 78),
               const SizedBox(height: 10),
-
-              // Mô tả trạng thái thời tiết (ví dụ: overcast clouds, few clouds)
               Text(
                 data.description,
                 style: const TextStyle(
@@ -304,8 +321,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Nhiệt độ hiện tại
               Text(
                 '${data.temp}°C',
                 style: const TextStyle(
@@ -316,8 +331,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
               ),
               const SizedBox(height: 2),
-
-              // Cảm giác như
               Text(
                 'Feels like ${data.feelsLike}°C',
                 style: const TextStyle(
@@ -327,8 +340,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
               ),
               const SizedBox(height: 22),
-
-              // 4 ô thông số chi tiết (Grid 2x2)
               Row(
                 children: [
                   Expanded(
@@ -379,7 +390,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  /// Widget hiển thị thẻ thông số con (Độ ẩm, Tốc độ gió, Nhiệt độ Min/Max)
   Widget _buildDetailCard({
     required IconData icon,
     required Color iconColor,

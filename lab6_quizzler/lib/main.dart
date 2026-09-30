@@ -27,8 +27,8 @@ class QuizzlerApp extends StatelessWidget {
       home: const AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light, // Biểu tượng trắng trên Android
-          statusBarBrightness: Brightness.dark,      // Biểu tượng trắng trên iOS
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
         child: Scaffold(
           backgroundColor: Colors.black,
@@ -136,7 +136,6 @@ class _QuizPageState extends State<QuizPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Phần hiển thị nội dung câu hỏi
         Expanded(
           flex: 5,
           child: Padding(
@@ -154,8 +153,6 @@ class _QuizPageState extends State<QuizPage> {
             ),
           ),
         ),
-
-        // Nút bấm Đúng (Màu xanh lá)
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
@@ -180,8 +177,6 @@ class _QuizPageState extends State<QuizPage> {
             ),
           ),
         ),
-
-        // Nút bấm Sai (Màu đỏ)
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
@@ -206,8 +201,6 @@ class _QuizPageState extends State<QuizPage> {
             ),
           ),
         ),
-
-        // Hàng hiển thị danh sách biểu tượng kết quả (scoreKeeper)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
           child: SizedBox(

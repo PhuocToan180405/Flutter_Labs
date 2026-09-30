@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lab3_dice/main.dart';
 
@@ -9,14 +10,14 @@ void main() {
     // Verify AppBar title is present
     expect(find.text('Dice'), findsOneWidget);
 
-    // Verify 'Lắc xúc xắc' button is present
-    expect(find.text('Lắc xúc xắc'), findsOneWidget);
+    // Verify two dice images are present
+    expect(find.byType(Image), findsNWidgets(2));
 
-    // Tap the 'Lắc xúc xắc' button
-    await tester.tap(find.text('Lắc xúc xắc'));
+    // Tap on the first dice (TextButton)
+    await tester.tap(find.byType(TextButton).first);
     await tester.pump();
 
-    // Verify widget still builds and functions without error
+    // Verify app continues to display
     expect(find.text('Dice'), findsOneWidget);
   });
 }

@@ -54,7 +54,6 @@ class _StoryPageState extends State<StoryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Khối hiển thị văn bản câu chuyện chính
               Expanded(
                 flex: 12,
                 child: Center(
@@ -72,8 +71,6 @@ class _StoryPageState extends State<StoryPage> {
                   ),
                 ),
               ),
-
-              // Nút lựa chọn 1 (Màu đỏ)
               Expanded(
                 flex: 2,
                 child: TextButton(
@@ -107,8 +104,6 @@ class _StoryPageState extends State<StoryPage> {
               const SizedBox(
                 height: 20.0,
               ),
-
-              // Nút lựa chọn 2 (Màu xanh - Ẩn khi kết thúc truyện bằng Visibility)
               Expanded(
                 flex: 2,
                 child: Visibility(

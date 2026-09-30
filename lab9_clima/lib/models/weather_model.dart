@@ -31,7 +31,6 @@ class WeatherData {
     required this.localTimeString,
   });
 
-  /// Factory chuyển đổi dữ liệu JSON từ OpenWeatherMap thành WeatherData
   factory WeatherData.fromJson(Map<String, dynamic> json) {
     final main = json['main'] as Map<String, dynamic>? ?? {};
     final weatherList = json['weather'] as List<dynamic>? ?? [];
@@ -60,7 +59,6 @@ class WeatherData {
     );
   }
 
-  /// Định dạng giờ địa phương (e.g. "11:24 PM local time")
   static String formatLocalTime(int timezoneOffsetInSeconds) {
     final nowUtc = DateTime.now().toUtc();
     final localDateTime = nowUtc.add(Duration(seconds: timezoneOffsetInSeconds));
@@ -72,24 +70,12 @@ class WeatherData {
     return '$formattedHour:$minute $period local time';
   }
 
-  /// Trả về Widget biểu tượng thời tiết đẹp mắt phù hợp với mã thời tiết
   Widget buildWeatherIcon({double size = 80}) {
-    // Mã OpenWeatherMap:
-    // 2xx: Dông bão (Thunderstorm)
-    // 3xx: Mưa phùn (Drizzle)
-    // 5xx: Mưa (Rain)
-    // 6xx: Tuyết (Snow)
-    // 7xx: Khí quyển (Sương mù, khói bụi)
-    // 800: Trời quang (Clear sky)
-    // 801: Ít mây (Few clouds: Sun + Cloud)
-    // 802-804: Nhiều mây / U ám (Overcast / Scattered clouds)
-
     const Color cloudBlue = Color(0xFF29B6F6);
     const Color deepBlue = Color(0xFF0288D1);
     const Color sunYellow = Color(0xFFFFB300);
 
     if (conditionCode < 300) {
-      // Dông bão
       return Stack(
         alignment: Alignment.center,
         children: [
@@ -101,7 +87,6 @@ class WeatherData {
         ],
       );
     } else if (conditionCode < 600) {
-      // Mưa
       return Stack(
         alignment: Alignment.center,
         children: [
@@ -113,16 +98,12 @@ class WeatherData {
         ],
       );
     } else if (conditionCode < 700) {
-      // Tuyết
       return Icon(Icons.ac_unit, size: size, color: cloudBlue);
     } else if (conditionCode < 800) {
-      // Sương mù
       return Icon(Icons.cloud_queue, size: size, color: cloudBlue);
     } else if (conditionCode == 800) {
-      // Trời quang đãng
       return Icon(Icons.wb_sunny_rounded, size: size, color: sunYellow);
     } else if (conditionCode == 801) {
-      // Ít mây (Few clouds: Mặt trời phía sau đám mây như hình ảnh Lab)
       return SizedBox(
         width: size * 1.1,
         height: size,
@@ -151,7 +132,6 @@ class WeatherData {
         ),
       );
     } else {
-      // Mây rải rác hoặc u ám (Overcast / Scattered clouds - như hình ảnh 1 của Lab)
       return Icon(
         Icons.cloud,
         size: size,

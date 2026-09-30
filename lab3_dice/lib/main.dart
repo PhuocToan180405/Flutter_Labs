@@ -5,8 +5,6 @@ void main() {
   runApp(const DiceApp());
 }
 
-/// [DiceApp] là widget gốc của ứng dụng (StatelessWidget).
-/// Không lưu trữ trạng thái có thể thay đổi trong quá trình chạy.
 class DiceApp extends StatelessWidget {
   const DiceApp({super.key});
 
@@ -14,11 +12,14 @@ class DiceApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Dice App - Lab 3',
+      title: 'Dice',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepOrange,
-          primary: Colors.deepOrange,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          centerTitle: true,
         ),
         useMaterial3: true,
       ),
@@ -27,9 +28,6 @@ class DiceApp extends StatelessWidget {
   }
 }
 
-/// [DicePage] là StatefulWidget để quản lý trạng thái các mặt xúc xắc.
-/// Khi người dùng tương tác (nhấn nút hoặc chạm vào xúc xắc),
-/// trạng thái sẽ thay đổi và giao diện được vẽ lại nhờ `setState()`.
 class DicePage extends StatefulWidget {
   const DicePage({super.key});
 
@@ -38,18 +36,12 @@ class DicePage extends StatefulWidget {
 }
 
 class _DicePageState extends State<DicePage> {
-  // Biến lưu giá trị hiện tại của 2 xúc xắc (từ 1 đến 6)
-  // Khởi tạo 6 và 4 như hình minh họa mẫu của Lab
   int leftDiceNumber = 6;
   int rightDiceNumber = 4;
-
-  // Đối tượng Random để sinh số ngẫu nhiên
   final Random _random = Random();
 
-  /// Hàm lắc xúc xắc: sinh số ngẫu nhiên từ 1 đến 6 và cập nhật giao diện
   void rollDice() {
     setState(() {
-      // nextInt(6) sinh số từ 0 đến 5, cộng 1 để được giá trị từ 1 đến 6
       leftDiceNumber = _random.nextInt(6) + 1;
       rightDiceNumber = _random.nextInt(6) + 1;
     });
@@ -57,121 +49,36 @@ class _DicePageState extends State<DicePage> {
 
   @override
   Widget build(BuildContext context) {
-    int totalScore = leftDiceNumber + rightDiceNumber;
-
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Dice',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
-          ),
-        ),
+        title: const Text('Dice'),
         centerTitle: true,
-        elevation: 0,
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
+        elevation: 0,
       ),
       body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Khung hiển thị tổng điểm
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.deepOrange.shade50,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.deepOrange.shade200),
-                  ),
-                  child: Text(
-                    'Tổng điểm: $totalScore',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.deepOrange.shade800,
-                    ),
-                  ),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: rollDice,
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.all(16.0),
                 ),
-                const SizedBox(height: 32),
-
-                // Hàng chứa 2 xúc xắc
-                Row(
-                  children: [
-                    // Xúc xắc bên trái
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: rollDice,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Image.asset(
-                            'assets/dice$leftDiceNumber.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Xúc xắc bên phải
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: rollDice,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Image.asset(
-                            'assets/dice$rightDiceNumber.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-                Text(
-                  'Chạm vào xúc xắc hoặc nhấn nút bên dưới để lắc',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                // Nút bấm lắc xúc xắc (ElevatedButton theo yêu cầu)
-                ElevatedButton.icon(
-                  onPressed: rollDice,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 36,
-                      vertical: 16,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    elevation: 4,
-                  ),
-                  icon: const Icon(Icons.casino, size: 26),
-                  label: const Text(
-                    'Lắc xúc xắc',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.8,
-                    ),
-                  ),
-                ),
-              ],
+                child: Image.asset('assets/dice$leftDiceNumber.png'),
+              ),
             ),
-          ),
+            Expanded(
+              child: TextButton(
+                onPressed: rollDice,
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.all(16.0),
+                ),
+                child: Image.asset('assets/dice$rightDiceNumber.png'),
+              ),
+            ),
+          ],
         ),
       ),
     );
